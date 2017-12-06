@@ -30,7 +30,6 @@ class WifiModule(wishful_module.AgentModule):
         super(WifiModule, self).__init__()
         self.log = logging.getLogger('wifi_module.main')
         self.interface = "wlan0"
-        self.wlan_interface = "wlan0"
         self.phy = "phy0"
         self.channel = 1
         self.power = 1
@@ -52,7 +51,7 @@ class WifiModule(wishful_module.AgentModule):
                     break
             if survey_enable:
                 exec_file = str(os.path.join(self.get_platform_path_iw())) + '/iw'
-                cmd_string = str(exec_file) + " dev " + self.wlan_interface + " surveyfreq dump"
+                cmd_string = str(exec_file) + " dev " + self.interface + " surveyfreq dump"
                 #{"NOISE":-91,"TIME":308148,"BUSY_TIME":83831,"EXT_BUSY_TIME":47539,"RX_ACTIVITY":47539,"TX_ACTIVITY":1475}
                 try:
                     [rcode, sout, serr] = self.run_command(cmd_string)
@@ -162,9 +161,9 @@ class WifiModule(wishful_module.AgentModule):
 
     @wishful_module.bind_function(upis.wifi.radio.set_rts_threshold)
     def set_rts_threshold(self, rts_threshold):
-        self.log.info('setting set_rts_threshold(): %s->%s' % (str(self.wlan_interface), str(rts_threshold)))
+        self.log.info('setting set_rts_threshold(): %s->%s' % (str(self.interface), str(rts_threshold)))
         try:
-            [rcode, sout, serr] = self.run_command('sudo iwconfig {0} rts {1}'.format(self.wlan_interface, rts_threshold))
+            [rcode, sout, serr] = self.run_command('sudo iwconfig {0} rts {1}'.format(self.interface, rts_threshold))
         except Exception as e:
             fname = inspect.currentframe().f_code.co_name
             self.log.fatal("An error occurred in %s: %s" % (fname, e))
@@ -175,9 +174,9 @@ class WifiModule(wishful_module.AgentModule):
     @wishful_module.bind_function(upis.radio.set_tx_power)
     def set_tx_power(self, power_dBm):
 
-        self.log.info('setting set_power(): %s->%s' % (str(self.wlan_interface), str(power_dBm)))
+        self.log.info('setting set_power(): %s->%s' % (str(self.interface), str(power_dBm)))
 
-        cmd_str = 'iw dev ' + self.wlan_interface + ' set txpower fixed ' + \
+        cmd_str = 'iw dev ' + self.interface + ' set txpower fixed ' + \
                   str(power_dBm * 100)
 
         try:
@@ -222,9 +221,9 @@ class WifiModule(wishful_module.AgentModule):
     @wishful_module.bind_function(upis.radio.set_modulation_rate)
     def set_modulation_rate(self, rate_Mbps):
 
-        self.log.info('setting modulation rate(): %s->%s' % (str(self.wlan_interface), str(rate_Mbps)))
+        self.log.info('setting modulation rate(): %s->%s' % (str(self.interface), str(rate_Mbps)))
 
-        cmd_str = 'sudo iwconfig ' + self.wlan_interface + ' rate ' + \
+        cmd_str = 'sudo iwconfig ' + self.interface + ' rate ' + \
                   str(rate_Mbps) + 'M' + ' fixed'
 
         try:
@@ -294,7 +293,7 @@ class WifiModule(wishful_module.AgentModule):
 
     @wishful_module.bind_function(upis.wifi.net.set_hostapd_conf)
     def set_hostapd_conf(self, iface, file_path, channel, essid):
-        self.log.debug("WIFI Module set hostapd configuratin file: {}".format(self.wlan_interface))
+        self.log.debug("WIFI Module set hostapd configuratin file: {}".format(self.interface))
 
         from hostapdconf.parser import HostapdConf
         from hostapdconf import helpers as ha
@@ -491,7 +490,7 @@ class WifiModule(wishful_module.AgentModule):
     @wishful_module.bind_function(upis.wifi.net.connect_to_network)
     def connect_to_network(self, iface, ssid):
 
-        self.log.info('connecting via to AP with SSID: %s->%s' % (str(self.wlan_interface), str(ssid)))
+        self.log.info('connecting via to AP with SSID: %s->%s' % (str(self.interface), str(ssid)))
 
         cmd_str = 'sudo iwconfig ' + str(iface) + ' essid ' + str(ssid)
 
@@ -523,7 +522,7 @@ class WifiModule(wishful_module.AgentModule):
     @wishful_module.bind_function(upis.net.set_ip_address)
     def set_ip_address(self, iface, ip_address):
 
-        self.log.info('setting ip address(): %s->%s' % (str(self.wlan_interface), str(ip_address)))
+        self.log.info('setting ip address(): %s->%s' % (str(self.interface), str(ip_address)))
 
         cmd_str = 'sudo ifconfig ' + str(iface) + ' ' + str(ip_address)
 
