@@ -223,7 +223,8 @@ class WifiModule(wishful_module.AgentModule):
 
         self.log.info('setting modulation rate(): %s->%s' % (str(self.wlan_interface), str(rate_Mbps)))
 
-        cmd_str = 'iwconfig ' + self.wlan_interface + ' rate ' + str(rate_Mbps) + 'M' + ' fixed'
+        cmd_str = 'sudo iwconfig ' + self.wlan_interface + ' rate ' + \
+                  str(rate_Mbps) + 'M' + ' fixed'
 
         try:
             [rcode, sout, serr] = self.run_command(cmd_str)
