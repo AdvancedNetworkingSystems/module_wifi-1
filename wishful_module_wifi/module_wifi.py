@@ -176,7 +176,7 @@ class WifiModule(wishful_module.AgentModule):
 
         self.log.info('setting set_power(): %s->%s' % (str(self.interface), str(power_dBm)))
 
-        cmd_str = 'iw dev ' + self.interface + ' set txpower fixed ' + \
+        cmd_str = 'sudo iw dev ' + self.interface + ' set txpower fixed ' + \
                   str(power_dBm * 100)
 
         try:
